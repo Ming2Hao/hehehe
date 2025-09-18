@@ -144,7 +144,7 @@ async def grade_using_cv(filepath: str):
     
     # 7. Simpan Gambar Hasil
     timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    save_path = os.path.join("./hasil/", f"graded_image_cv-{timestamp}.jpg")
+    save_path = os.path.join("/home/ubuntu/Aflatoksin/controlCamera/hehehe/hasil/", f"graded_image_cv-{timestamp}.jpg")
     
     _, img_encoded = cv2.imencode('.jpg', labeled_image)
     async with aiofiles.open(save_path, "wb") as img_file:
