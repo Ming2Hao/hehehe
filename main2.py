@@ -188,11 +188,40 @@ def read_root():
 
     return FileResponse(picID+".jpg")
 
+@app.get("/captureImage2")
+def read_root():
+    shot_date = datetime.now().strftime("%Y-%m-%d")
+    shot_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    picID = "PiShots_" + shot_time
 
-@app.get("/gradeImage/{image_path}")
+    captureAndDownloadCommand = ["--capture-image-and-download","--filename",picID+".jpg"]
+
+    folder_name = shot_date
+    createSaveFolder(folder_name)
+    captureImages(captureAndDownloadCommand, picID)
+
+    # return FileResponse(picID+".jpg")
+    return {"image_path": os.path.abspath(picID+".jpg")}
+
+
+@app.get("/gradeImage")
 async def grade_image(image_path: str):
     try:
         result = await grade_using_cv(image_path)
         return result
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/openImage")
+def open_image(image_path: str):
+    try:
+        # Open the image using OpenCV
+        image = cv2.imread(image_path)
+        if image is None:
+            return {"error": "Image not found"}
+
+        # Convert the image to a format suitable for display
+        _, img_encoded = cv2.imencode('.jpg', image)
+        return {"image": img_encoded.tobytes()}
     except Exception as e:
         return {"error": str(e)}
